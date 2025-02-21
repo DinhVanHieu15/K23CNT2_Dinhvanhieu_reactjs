@@ -35,7 +35,7 @@ class DvhClassComp extends Component {
             <h3>
                 lấy dữ liệu từ props
             </h3>
-            <p>Name: {this.props.renderName}</p>
+            <p>Name: {user ? user.fullName : ""}</p>  {/* Changed 'users' to 'user' */}
             <p>FullName: {this.props.renderfullName}</p>
             <p>Age: {this.props.renderage}</p>
             <p>Phone: {this.props.renderphone}</p>

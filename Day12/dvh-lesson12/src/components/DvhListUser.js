@@ -1,36 +1,33 @@
-import React from 'react'
+import React from 'react';
 
+export default function DvhListUser({ dvhUsers }) {
+    const dvhElements = dvhUsers.map((dvhItem, index) => (
+        <tr key={index}>
+            <td>{index + 1}</td>
+            <td>{dvhItem.id}</td>
+            <td>{dvhItem.dvhFullName}</td>
+            <td>{dvhItem.dvhUserName}</td>
+            <td>{dvhItem.dvhPassWord}</td>
+        </tr>
+    ));
 
-
-
-export default function DvhListUser(renderDvhUser) {
-    const dvhElements = renderDvhUser.map((dvhItem, index) => {
-        return (
-        <>
-            <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{dvhItem.id}</td>
-                <td>{dvhItem.dvhFullNamw}</td>
-                <td>{dvhItem.dvhUserName}</td>
-                <td>{dvhItem.dvhPassWord}</td>
-
-            </tr>
-        </> )
-    })
     return (
         <div>
-            <h2> Danh sách tài khoản</h2>
-            <table className='table table-border'></table>
-            <thead>
-                <tr>#</tr>
-                <tr>ID</tr>
-                <tr>FullName</tr>
-                <tr>UserName</tr>
-                <tr>Password</tr>
-            </thead>
-            <tbody>
-                {dvhElements}
-            </tbody>
+            <h2>Danh sách tài khoản</h2>
+            <table className='table table-border'>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {dvhElements}
+                </tbody>
+            </table>
         </div>
-    )
+    );
 }

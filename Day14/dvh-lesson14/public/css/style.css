@@ -1,99 +1,60 @@
-/* Container tổng */
 .container {
-    max-width: 600px;
-    margin: auto;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Tiêu đề */
-  h2 {
-    text-align: center;
-    color: #007bff;
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  /* Input fields */
-  .form-control {
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  /* Hiển thị lỗi */
-  .is-invalid {
-    border-color: #dc3545 !important;
-  }
-  
-  .invalid-feedback {
-    color: #dc3545;
-    font-size: 14px;
-    margin-top: 5px;
-  }
-  
-  /* Nút bấm */
-  .btn-primary {
-    background-color: #007bff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Nút đóng alert */
-  .btn-close {
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
-  
-  /* Radio buttons */
-  .form-check-label {
-    margin-left: 5px;
-  }
-  
-  .form-check-input {
-    cursor: pointer;
-  }
-  
-  /* Alert messages */
-  .alert {
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-    position: relative;
-  }
-  
-  .alert-success {
-    background-color: #d4edda;
-    color: #155724;
-  }
-  
-  .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-  }
-  
-  /* Căn giữa nút */
-  .d-flex {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-  }
-  
+  max-width: 600px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #198754;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+  color: #333;
+}
+
+input.form-control {
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+input.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+}
+
+.form-check-label {
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+button.btn-secondary:hover {
+  background-color: #6c757d;
+}
+
+.alert {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.d-flex {
+  justify-content: center;
+  margin-top: 20px;
+}

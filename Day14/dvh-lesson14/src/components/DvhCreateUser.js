@@ -1,189 +1,128 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState } from 'react'
 import { useNavigate } from "react-router-dom";
-import DvhAxiosUsers from "../api/Dvh_api";
 
 export default function DvhCreateUser() {
-  const navigate = useNavigate();
-  const [Dvh_formData, setDvh_formData] = useState({
-    Dvh_name: "",
-    Dvh_email: "",
-    Dvh_phone: "",
-    Dvh_active: true, // Mặc định là "Hoạt động"
-  });
-  const [Dvh_errors, setDvh_errors] = useState({});
-  const [Dvh_alert, setDvh_alert] = useState(null);
 
-  // Xử lý sự kiện thay đổi input
-  const Dvh_handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setDvh_formData({
-      ...Dvh_formData,
-      [name]: type === "radio" ? value === "true" : value,
-    });
-  };
-
-  // Kiểm tra dữ liệu trước khi gửi
-  const validateForm = () => {
-    let errors = {};
-    if (!Dvh_formData.Dvh_name.trim())
-      errors.Dvh_name = "Vui lòng nhập họ và tên!";
-    if (!Dvh_formData.Dvh_email.trim()) {
-      errors.Dvh_email = "Vui lòng nhập email!";
-    } else if (!/\S+@\S+\.\S+/.test(Dvh_formData.Dvh_email)) {
-      errors.Dvh_email = "Email không hợp lệ!";
+    let Dvhuser = {
+        id: '',
+        Dvh_name: "",
+        Dvh_email: "",
+        Dvh_phone: "",
+        Dvh_active: false
     }
-    if (!Dvh_formData.Dvh_phone.trim()) {
-      errors.Dvh_phone = "Vui lòng nhập số điện thoại!";
-    } else if (!/^\d{10,11}$/.test(Dvh_formData.Dvh_phone)) {
-      errors.Dvh_phone = "Số điện thoại không hợp lệ!";
+
+    const [Dvh_users, setDvhUser] = useState(Dvhuser)
+    const DvhApiUrl = "https://67da475135c87309f52bc393.mockapi.io/Dinhvanhieu/dvh_users"
+
+    const navigate = useNavigate();
+
+    const DvhHandleSubmit = (event) => {
+        event.preventDefault();
+
+        // Kiểm tra dữ liệu trước khi gửi
+        console.log("Dữ liệu chuẩn bị gửi lên API:", Dvh_users);
+
+        axios
+            .post(DvhApiUrl, Dvh_users) // Dùng POST để tạo mới dữ liệu
+            .then((response) => {
+                console.log("Tạo mới thành công:", response.data);
+                alert("User đã được thêm thành công!");
+                navigate('/list-user'); // Chuyển hướng về danh sách sau khi thêm thành công
+            })
+            .catch((error) => {
+                console.error("Lỗi khi thêm mới:", error);
+            });
+    };
+
+    const DvhHandleBack = (event) => {
+        event.preventDefault();
+        navigate('/list-user')
     }
-    setDvh_errors(errors);
-    return Object.keys(errors).length === 0;
-  };
 
-  // Xử lý khi submit form
-  const Dvh_handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return; // Kiểm tra lỗi trước khi gửi dữ liệu
-    console.log("Dvh_formData:", Dvh_formData);
+    return (
+        <div>
+            <h2 className="alert alert-success">Thêm mới thông tin User</h2>
+            <form>
+                <div className="mb-3 row">
+                    <label htmlFor="dvh_name" className="col-sm-2 col-form-label">
+                        Full Name
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="dvh_name"
+                            name="dvh_name"
+                            value={Dvh_users.Dvh_name}
+                            onChange={(ev) => setDvhUser({ ...Dvh_users, Dvh_name: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="dvh_email" className="col-sm-2 col-form-label">
+                        Email
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="email"
+                            className="form-control"
+                            id="dvh_email"
+                            name="dvh_email"
+                            value={Dvh_users.Dvh_email}
+                            onChange={(ev) => setDvhUser({ ...Dvh_users, Dvh_email: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="dvh_phone" className="col-sm-2 col-form-label">
+                        Phone
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="tel"
+                            className="form-control"
+                            id="dvh_phone"
+                            name="dvh_phone"
+                            value={Dvh_users.Dvh_phone}
+                            onChange={(ev) => setDvhUser({ ...Dvh_users, Dvh_phone: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="dvh_active" className="col-sm-2 col-form-label">
+                        Active
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="radio"
+                            id="dvh_active_true"
+                            name="dvh_active"
+                            value="true"
+                            checked={Dvh_users.Dvh_active === true}
+                            onChange={() => setDvhUser({ ...Dvh_users, Dvh_active: true })}
+                        />
+                        <label htmlFor="dvh_active_true" className="mx-2 text-success">Hoạt động</label>
 
-    try {
-      await DvhAxiosUsers.post("/Dvh_users", Dvh_formData);
-      setDvh_alert({ type: "success", message: "Thêm user thành công!" });
-      setTimeout(() => {
-        setDvh_alert(null);
-        navigate("/list-user");
-      }, 1000);
-    } catch (error) {
-      console.error("Lỗi khi thêm user:", error);
-      setDvh_alert({ type: "danger", message: "Lỗi khi thêm user!" });
-      setTimeout(() => setDvh_alert(null), 3000);
-    }
-  };
-
-  return (
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">Form Thêm Mới User</h2>
-
-      {Dvh_alert && (
-        <div
-          className={`alert alert-${Dvh_alert.type} alert-dismissible fade show`}
-          role="alert"
-        >
-          {Dvh_alert.message}
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setDvh_alert(null)}
-            aria-label="Close"
-          ></button>
+                        <input
+                            type="radio"
+                            id="dvh_active_false"
+                            name="dvh_active"
+                            value="false"
+                            checked={Dvh_users.Dvh_active === false}
+                            onChange={() => setDvhUser({ ...Dvh_users, Dvh_active: false })}
+                        />
+                        <label htmlFor="dvh_active_false" className="mx-2 text-danger">Khóa</label>
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="" className="col-sm-2 col-form-label"></label>
+                    <div className="col-sm-6">
+                        <button className="btn btn-primary mx-1" onClick={DvhHandleSubmit}>Create</button>
+                        <button className="btn btn-success px-3" onClick={DvhHandleBack}>Back</button>
+                    </div>
+                </div>
+            </form>
         </div>
-      )}
-
-      <form onSubmit={Dvh_handleSubmit}>
-        {/* Họ và Tên */}
-        <div className="mb-3">
-          <label htmlFor="Dvh_name" className="form-label">
-            Họ và Tên
-          </label>
-          <input
-            type="text"
-            className={`form-control ${
-              Dvh_errors.Dvh_name ? "is-invalid" : ""
-            }`}
-            id="Dvh_name"
-            name="Dvh_name"
-            value={Dvh_formData.Dvh_name}
-            onChange={Dvh_handleChange}
-            placeholder="Nhập họ và tên"
-          />
-          {Dvh_errors.Dvh_name && (
-            <div className="invalid-feedback">{Dvh_errors.Dvh_name}</div>
-          )}
-        </div>
-
-        {/* Email */}
-        <div className="mb-3">
-          <label htmlFor="Dvh_email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            className={`form-control ${
-              Dvh_errors.Dvh_email ? "is-invalid" : ""
-            }`}
-            id="Dvh_email"
-            name="Dvh_email"
-            value={Dvh_formData.Dvh_email}
-            onChange={Dvh_handleChange}
-            placeholder="Nhập email"
-          />
-          {Dvh_errors.Dvh_email && (
-            <div className="invalid-feedback">{Dvh_errors.Dvh_email}</div>
-          )}
-        </div>
-
-        {/* Số điện thoại */}
-        <div className="mb-3">
-          <label htmlFor="Dvh_phone" className="form-label">
-            Số Điện Thoại
-          </label>
-          <input
-            type="text"
-            className={`form-control ${
-              Dvh_errors.Dvh_phone ? "is-invalid" : ""
-            }`}
-            id="Dvh_phone"
-            name="Dvh_phone"
-            value={Dvh_formData.Dvh_phone}
-            onChange={Dvh_handleChange}
-            placeholder="Nhập số điện thoại"
-          />
-          {Dvh_errors.Dvh_phone && (
-            <div className="invalid-feedback">{Dvh_errors.Dvh_phone}</div>
-          )}
-        </div>
-
-        {/* Trạng thái */}
-        <div className="mb-3">
-          <label className="form-label">Trạng Thái</label>
-          <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="Dvh_active_true"
-              name="Dvh_active"
-              value="true"
-              checked={Dvh_formData.Dvh_active === true}
-              onChange={Dvh_handleChange}
-            />
-            <label className="form-check-label" htmlFor="Dvh_active_true">
-              Hoạt động
-            </label>
-          </div>
-          <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="Dvh_active_false"
-              name="Dvh_active"
-              value="false"
-              checked={Dvh_formData.Dvh_active === false}
-              onChange={Dvh_handleChange}
-            />
-            <label className="form-check-label" htmlFor="Dvh_active_false">
-              Khóa
-            </label>
-          </div>
-        </div>
-
-        {/* Nút Thêm Mới */}
-        <div className="d-flex justify-content-center">
-          <button type="submit" className="btn btn-primary">
-            Thêm Mới
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+    )
 }

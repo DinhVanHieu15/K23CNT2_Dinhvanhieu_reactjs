@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+nav a{
+  display: inline-block;
+  padding: .5rem 1rem;
+} 
+
+nav a:hover{
+  background-color: aquamarine;
+}
+
+/* Căn giữa bảng */
+table {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề */
+h2 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* Header của bảng */
+thead {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Ô trong bảng */
+td, th {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+/* Badge trạng thái */
+.badge {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Nút */
+.btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* DvhNavBar.css */
+
+/* Thanh điều hướng */
+nav {
+  background-color: #007bff;
+  padding: 15px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+/* Link trong navbar */
+nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  margin: 0 15px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Hover cho link */
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Ngăn cách link */
+nav a:not(:last-child)::after {
+  content: "|";
+  margin-left: 15px;
+  color: white;
+}

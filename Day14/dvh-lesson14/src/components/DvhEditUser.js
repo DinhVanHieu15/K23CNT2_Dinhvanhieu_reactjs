@@ -1,166 +1,148 @@
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import DvhAxiosUsers from '../api/Dvh_api';
 
 export default function DvhEditUser() {
-  const { id } = useParams(); // Get user ID from URL
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    Dvh_name: '',
-    Dvh_email: '',
-    Dvh_phone: '',
-    Dvh_active: '',
-  });
-  const [errors, setErrors] = useState({});
-  const [alert, setAlert] = useState(null);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await DvhAxiosUsers.get(`/Dvh_users/${id}`);
-        setFormData(response.data); // Assuming the API returns the user object
-      } catch (error) {
-        console.error('Error fetching user:', error);
-        setAlert({ type: 'danger', message: 'Lỗi khi tải thông tin user!' });
-        setTimeout(() => setAlert(null), 3000);
+
+    //api
+    const dvhApiUrl = "https://67da475135c87309f52bc393.mockapi.io/Dinhvanhieu/dvh_users"
+    //lấy biến id trên url
+    const { id } = useParams(); // <Route path='/edit-user/:id' element={<DvhEditUser />} />; navigate(`/edit-user/${dvhId}`);
+    //Khởi tạo state cho component
+    const [dvh_editUser, setDvhEditUser] = useState({
+        dvh_name: '', dvh_email: '', dvh_phone: '', dvh_active: false
+    })
+    //đọc dữ liệu từ api và set cho state: dvh_editUser
+    useEffect(() => {
+      console.log("Fetching data with ID:", id);
+      if (!id) {
+          console.error("ID is undefined or null");
+          return;
       }
-    };
-    fetchUser();
+      axios.get(`${dvhApiUrl}/${id}`)
+          .then((dvh_response) => {
+              console.log("Data received:", dvh_response.data);
+              setDvhEditUser(dvh_response.data);
+          })
+          .catch((error) => {
+              console.error("Lỗi khi đọc dữ liệu từ API:", error);
+          });
   }, [id]);
+  
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'radio' ? (e.target.value === 'true') : value,
-    });
-  };
+    //Hàm xử lí khi người dùng thay đổi trạng thái Active
+    const dvhHandleRadioChange = (ev) => {
+        setDvhEditUser({
+            ...dvh_editUser,
+            dvh_active: ev.target.value === "true", // Chuyển "true" thành true (boolean)
+        });
+    };
+    //tạo navigate từ react router dom để điều hướng khi cập nhật thành công hoặc back
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    //Khi người dùng nhấn nút submit => lấy dữ liệu từ form post vào api
+    //Hàm cập nhật những thay đổi trên form vào api
+    const dvhHandleSubmit = (event) => {
+        event.preventDefault();
+        console.log("Data to update:", dvh_editUser);
+    
+        axios
+            .put(`${dvhApiUrl}/${id}`, dvh_editUser)
+            .then((dvh_response) => {
+                console.log("Update Success:", dvh_response.data);
+                alert('Successed!');
+                navigate('/list-user');
+            })
+            .catch((error) => {
+                console.error("Lỗi khi cập nhật dữ liệu:", error);
+            });
+    };
+    // khi click vào nút back
+    const dvhHandleBack = (event) => {
+        event.preventDefault();
+        navigate('/list-user')
+    };
 
-    try {
-      await DvhAxiosUsers.put(`/Dvh_users/${id}`, formData);
-      setAlert({ type: 'success', message: 'Cập nhật user thành công!' });
-      setTimeout(() => {
-        setAlert(null);
-        navigate('/list-user');
-      }, 1000);
-    } catch (error) {
-      console.error('Error updating user:', error);
-      setAlert({ type: 'danger', message: 'Lỗi khi cập nhật user!' });
-      setTimeout(() => setAlert(null), 3000);
-    }
-  };
-
-  return (
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">Sửa Thông Tin User</h2>
-      {alert && (
-        <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert">
-          {alert.message}
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setAlert(null)}
-            aria-label="Close"
-          ></button>
+    return (
+        <div>
+            <h2 className="alert alert-success">Sửa thông tin User</h2>
+            <form>
+                <div className="mb-3 row">
+                    <label htmlFor="dvh_name" className="col-sm-2 col-form-label">
+                        Full Name
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="Dvh_name"
+                            name="Dvh_name"
+                            value={dvh_editUser.dvh_name}
+                            onChange={(ev) => setDvhEditUser({ ...dvh_editUser, dvh_name: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="Dvh_email" className="col-sm-2 col-form-label">
+                        Email
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="email"
+                            className="form-control"
+                            id="Dvh_email"
+                            name="Dvh_email"
+                            value={dvh_editUser.dvh_email}
+                            onChange={(ev) => setDvhEditUser({ ...dvh_editUser, dvh_email: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="Dvh_phone" className="col-sm-2 col-form-label">
+                        Phone
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="tel"
+                            className="form-control"
+                            id="Dvh_phone"
+                            name="Dvh_phone"
+                            value={dvh_editUser.dvh_phone}
+                            onChange={(ev) => setDvhEditUser({ ...dvh_editUser, dvh_phone: ev.target.value })}
+                        />
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="Dvh_active" className="col-sm-2 col-form-label">
+                        Active
+                    </label>
+                    <div className="col-sm-6">
+                        <input
+                            type="radio"
+                            id="Dvh_active_true"
+                            name="Dvh_active"
+                            value={'true'}
+                            checked={dvh_editUser.dvh_active === 'true' || dvh_editUser.dvh_active === true} // Kiểm tra nếu giá trị là "true"
+                            onChange={dvhHandleRadioChange}
+                        /> <label htmlFor="Dvh_active_true" className="mx-2 text-success">Hoạt động</label>
+                        <input
+                            type="radio"
+                            id="Dvh_active_false"
+                            name="Dvh_active"
+                            value={'false'}
+                            checked={dvh_editUser.dvh_active === 'false' || dvh_editUser.dvh_active === false} // Kiểm tra nếu giá trị là "false"
+                            onChange={dvhHandleRadioChange}
+                        /> <label htmlFor="Dvh_active_false" className="mx-2 text-danger">Đang khóa</label>
+                    </div>
+                </div>
+                <div className="mb-3 row">
+                    <label htmlFor="" className="col-sm-2 col-form-label"></label>
+                    <div className="col-sm-6">
+                        <button className="btn btn-primary mx-1" onClick={(e)=>dvhHandleSubmit(e)}>Update</button>
+                        <button className='btn btn-success px-3' onClick={dvhHandleBack}>Back</button>
+                    </div>
+                </div>
+            </form>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="Dvh_name" className="form-label">
-            Họ và Tên
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.Dvh_name ? 'is-invalid' : ''}`}
-            id="Dvh_name"
-            name="Dvh_name"
-            value={formData.Dvh_name}
-            onChange={handleChange}
-            placeholder="Nhập họ và tên"
-          />
-          {errors.Dvh_name && <div className="invalid-feedback">{errors.Dvh_name}</div>}
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="Dvh_email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            className={`form-control ${errors.Dvh_email ? 'is-invalid' : ''}`}
-            id="Dvh_email"
-            name="Dvh_email"
-            value={formData.Dvh_email}
-            onChange={handleChange}
-            placeholder="Nhập email"
-          />
-          {errors.Dvh_email && <div className="invalid-feedback">{errors.Dvh_email}</div>}
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="Dvh_phone" className="form-label">
-            Số Điện Thoại
-          </label>
-          <input
-            type="text"
-            className={`form-control ${errors.Dvh_phone ? 'is-invalid' : ''}`}
-            id="Dvh_phone"
-            name="Dvh_phone"
-            value={formData.Dvh_phone}
-            onChange={handleChange}
-            placeholder="Nhập số điện thoại"
-          />
-          {errors.Dvh_phone && <div className="invalid-feedback">{errors.Dvh_phone}</div>}
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Trạng Thái</label>
-          <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="Dvh_active_true"
-              name="Dvh_active"
-              value="true"
-              checked={formData.Dvh_active === true}
-              onChange={handleChange}
-            />
-            <label className="form-check-label" htmlFor="Dvh_active_true">
-              Hoạt động
-            </label>
-          </div>
-          <div className="form-check">
-            <input
-              type="radio"
-              className="form-check-input"
-              id="Dvh_active_false"
-              name="Dvh_active"
-              value="false"
-              checked={formData.Dvh_active === false}
-              onChange={handleChange}
-            />
-            <label className="form-check-label" htmlFor="Dvh_active_false">
-              Khóa
-            </label>
-          </div>
-        </div>
-
-        <div className="d-flex justify-content-center gap-2">
-          <button type="submit" className="btn btn-primary">
-            Cập Nhật
-          </button>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => navigate('/list-user')}
-          >
-            Hủy
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+    )
 }
